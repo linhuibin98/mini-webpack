@@ -1,4 +1,13 @@
 const path = require('path');
+const WatchPlugin = require('./plugin/watch-webpack-plugin');
+const HtmlPlugin = require('html-webpack-plugin');
+
+const VirtualModulesPlugin = require('webpack-virtual-modules');
+
+const virtualModules = new VirtualModulesPlugin({
+  'node_modules/module-foo.js': 'module.exports = { foo: "foo" };',
+  'node_modules/module-bar.js': 'module.exports = { bar: "bar" };'
+});
 
 module.exports = {
     mode: 'development',
@@ -34,5 +43,12 @@ module.exports = {
                 use: ['./loader/style-loader', './loader/css-loader', './loader/less-loader']
             }
         ]
-    }
+    },
+    plugins: [
+        new HtmlPlugin({
+            template: './dist/index.html'
+        }),
+        new WatchPlugin(),
+        virtualModules
+    ]
 };
